@@ -1,4 +1,10 @@
-document.addEventListener("DOMContentLoaded", () => {
+function initBirthdayGames() {
+    if (window.__birthdayGamesInitialized) {
+        return;
+    }
+
+    window.__birthdayGamesInitialized = true;
+
     const stage = document.getElementById("game-stage");
     const form = document.getElementById("game-form");
     const input = document.getElementById("location-guess");
@@ -9,173 +15,179 @@ document.addEventListener("DOMContentLoaded", () => {
     const streakValue = document.getElementById("streak-value");
     const roundValue = document.getElementById("round-number");
 
-    if (!stage || !form || !input || !feedback || !prompt || !nextButton || !scoreValue || !streakValue || !roundValue) {
-        return;
-    }
+    if (stage && form && input && feedback && prompt && nextButton && scoreValue && streakValue && roundValue) {
+        const state = {
+            memories: [],
+            currentMemory: null,
+            usedIndices: new Set(),
+            score: 0,
+            streak: 0,
+            bestStreak: 0,
+            round: 1,
+            locked: false
+        };
 
-    const state = {
-        memories: [],
-        currentMemory: null,
-        usedIndices: new Set(),
-        score: 0,
-        streak: 0,
-        bestStreak: 0,
-        round: 1,
-        locked: false
-    };
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
 
-    form.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        if (!state.currentMemory || state.locked) {
-            return;
-        }
-
-        const guess = input.value.trim();
-
-        if (!guess) {
-            setFeedback("Pick a location first.", "error");
-            return;
-        }
-
-        state.locked = true;
-        nextButton.disabled = false;
-
-        if (guess === state.currentMemory.location) {
-            state.score += 1;
-            state.streak += 1;
-            state.bestStreak = Math.max(state.bestStreak, state.streak);
-            setFeedback("Correct. That memory matches perfectly.", "success");
-
-            if (window.BirthdaySite && typeof window.BirthdaySite.launchConfetti === "function") {
-                window.BirthdaySite.launchConfetti(16);
+            if (!state.currentMemory || state.locked) {
+                return;
             }
+
+            const guess = input.value.trim();
+
+            if (!guess) {
+                setFeedback("Pick a location first.", "error");
+                return;
+            }
+
+            state.locked = true;
+            nextButton.disabled = false;
+
+            if (guess === state.currentMemory.location) {
+                state.score += 1;
+                state.streak += 1;
+                state.bestStreak = Math.max(state.bestStreak, state.streak);
+                setFeedback("Correct. That memory matches perfectly.", "success");
+
+                if (window.BirthdaySite && typeof window.BirthdaySite.launchConfetti === "function") {
+                    window.BirthdaySite.launchConfetti(16);
+                }
+            } else {
+                state.streak = 0;
+                setFeedback("Not quite. Try the next memory and keep the mystery alive.", "error");
+            }
+
+            syncScore();
+        });
+
+        nextButton.addEventListener("click", () => {
+            state.round += 1;
+            renderRound();
+        });
+
+        document.addEventListener("birthday:memories-ready", (event) => {
+            setMemories(event.detail);
+        });
+
+        if (window.BirthdaySite && Array.isArray(window.BirthdaySite.memories) && window.BirthdaySite.memories.length) {
+            setMemories(window.BirthdaySite.memories);
         } else {
-            state.streak = 0;
-            setFeedback("Not quite. Try the next memory and keep the mystery alive.", "error");
+            stage.innerHTML = "<p class=\"game-stage-note\">Waiting for memory data...</p>";
         }
 
-        syncScore();
-    });
+        function setMemories(memories) {
+            state.memories = memories.filter((memory) => typeof memory.location === "string" && memory.location.trim());
 
-    nextButton.addEventListener("click", () => {
-        state.round += 1;
-        renderRound();
-    });
+            if (!state.memories.length) {
+                prompt.textContent = "Add memories with a location value to play the game.";
+                stage.innerHTML = "<p class=\"game-stage-note\">No playable memories yet.</p>";
+                return;
+            }
 
-    document.addEventListener("birthday:memories-ready", (event) => {
-        setMemories(event.detail);
-    });
+            populateLocationOptions(state.memories);
+            renderRound();
+        }
 
-    if (window.BirthdaySite && Array.isArray(window.BirthdaySite.memories) && window.BirthdaySite.memories.length) {
-        setMemories(window.BirthdaySite.memories);
-    } else {
-        stage.innerHTML = "<p class=\"game-stage-note\">Waiting for memory data...</p>";
+        function renderRound() {
+            const memory = pickMemory();
+
+            if (!memory) {
+                prompt.textContent = "No memory available for this round.";
+                stage.innerHTML = "<p class=\"game-stage-note\">Try adding more memories.</p>";
+                return;
+            }
+
+            state.currentMemory = memory;
+            state.locked = false;
+            roundValue.textContent = String(state.round);
+            input.value = "";
+            nextButton.disabled = true;
+            feedback.textContent = "";
+            feedback.className = "game-feedback";
+
+            prompt.textContent = `${memory.title}: where was this taken?`;
+            stage.innerHTML = "";
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "game-memory";
+
+            const visualFactory = window.BirthdaySite && typeof window.BirthdaySite.createMemoryVisual === "function"
+                ? window.BirthdaySite.createMemoryVisual
+                : null;
+
+            if (visualFactory) {
+                wrapper.appendChild(visualFactory(memory, { compact: true, showBadge: false }));
+            }
+
+            const caption = document.createElement("p");
+            caption.className = "game-stage-note";
+            caption.textContent = memory.caption || "A strong birthday memory.";
+
+            wrapper.appendChild(caption);
+            stage.appendChild(wrapper);
+        }
+
+        function pickMemory() {
+            if (!state.memories.length) {
+                return null;
+            }
+
+            if (state.usedIndices.size === state.memories.length) {
+                state.usedIndices.clear();
+            }
+
+            let index = Math.floor(Math.random() * state.memories.length);
+
+            while (state.usedIndices.has(index) && state.usedIndices.size < state.memories.length) {
+                index = Math.floor(Math.random() * state.memories.length);
+            }
+
+            state.usedIndices.add(index);
+            return state.memories[index];
+        }
+
+        function setFeedback(message, tone) {
+            feedback.textContent = message;
+            feedback.className = `game-feedback ${tone === "success" ? "is-success" : "is-error"}`;
+        }
+
+        function populateLocationOptions(memories) {
+            const locations = [...new Set(memories.map((memory) => memory.location).filter(Boolean))].sort((left, right) =>
+                left.localeCompare(right)
+            );
+
+            input.innerHTML = "";
+
+            const placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.textContent = "Choose a location";
+            input.appendChild(placeholder);
+
+            locations.forEach((location) => {
+                const option = document.createElement("option");
+                option.value = location;
+                option.textContent = location;
+                input.appendChild(option);
+            });
+        }
+
+        function syncScore() {
+            scoreValue.textContent = String(state.score);
+            streakValue.textContent = String(state.bestStreak);
+        }
     }
 
     initTruthDareRoulette();
+}
 
-    function setMemories(memories) {
-        state.memories = memories.filter((memory) => typeof memory.location === "string" && memory.location.trim());
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initBirthdayGames);
+} else {
+    initBirthdayGames();
+}
 
-        if (!state.memories.length) {
-            prompt.textContent = "Add memories with a location value to play the game.";
-            stage.innerHTML = "<p class=\"game-stage-note\">No playable memories yet.</p>";
-            return;
-        }
-
-        populateLocationOptions(state.memories);
-        renderRound();
-    }
-
-    function renderRound() {
-        const memory = pickMemory();
-
-        if (!memory) {
-            prompt.textContent = "No memory available for this round.";
-            stage.innerHTML = "<p class=\"game-stage-note\">Try adding more memories.</p>";
-            return;
-        }
-
-        state.currentMemory = memory;
-        state.locked = false;
-        roundValue.textContent = String(state.round);
-        input.value = "";
-        nextButton.disabled = true;
-        feedback.textContent = "";
-        feedback.className = "game-feedback";
-
-        prompt.textContent = `${memory.title}: where was this taken?`;
-        stage.innerHTML = "";
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "game-memory";
-
-        const visualFactory = window.BirthdaySite && typeof window.BirthdaySite.createMemoryVisual === "function"
-            ? window.BirthdaySite.createMemoryVisual
-            : null;
-
-        if (visualFactory) {
-            wrapper.appendChild(visualFactory(memory, { compact: true, showBadge: false }));
-        }
-
-        const caption = document.createElement("p");
-        caption.className = "game-stage-note";
-        caption.textContent = memory.caption || "A strong birthday memory.";
-
-        wrapper.appendChild(caption);
-        stage.appendChild(wrapper);
-    }
-
-    function pickMemory() {
-        if (!state.memories.length) {
-            return null;
-        }
-
-        if (state.usedIndices.size === state.memories.length) {
-            state.usedIndices.clear();
-        }
-
-        let index = Math.floor(Math.random() * state.memories.length);
-
-        while (state.usedIndices.has(index) && state.usedIndices.size < state.memories.length) {
-            index = Math.floor(Math.random() * state.memories.length);
-        }
-
-        state.usedIndices.add(index);
-        return state.memories[index];
-    }
-
-    function setFeedback(message, tone) {
-        feedback.textContent = message;
-        feedback.className = `game-feedback ${tone === "success" ? "is-success" : "is-error"}`;
-    }
-
-    function populateLocationOptions(memories) {
-        const locations = [...new Set(memories.map((memory) => memory.location).filter(Boolean))].sort((left, right) =>
-            left.localeCompare(right)
-        );
-
-        input.innerHTML = "";
-
-        const placeholder = document.createElement("option");
-        placeholder.value = "";
-        placeholder.textContent = "Choose a location";
-        input.appendChild(placeholder);
-
-        locations.forEach((location) => {
-            const option = document.createElement("option");
-            option.value = location;
-            option.textContent = location;
-            input.appendChild(option);
-        });
-    }
-
-    function syncScore() {
-        scoreValue.textContent = String(state.score);
-        streakValue.textContent = String(state.bestStreak);
-    }
-});
+window.addEventListener("load", initBirthdayGames);
 
 function initTruthDareRoulette() {
     const truths = [
@@ -269,4 +281,8 @@ function initTruthDareRoulette() {
 
         return nextValue;
     }
+}
+
+function initChessGame() {
+    return;
 }

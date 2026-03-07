@@ -180,6 +180,28 @@
             </div>
         </section>
 
+        <section class="game-section reveal" id="chess-section">
+            <div class="section-heading">
+                <p class="eyebrow">Bonus Game</p>
+                <h2>Pocket Chess</h2>
+                <p class="section-copy">A quick playable board for when the birthday energy turns competitive.</p>
+            </div>
+
+            <div class="chess-board-shell chess-board-shell-wide">
+                <div class="chess-meta">
+                    <p class="chess-turn" id="chess-turn">White to move</p>
+                    <button class="button button-secondary chess-reset" id="chess-reset" type="button">Reset Board</button>
+                </div>
+                <div class="chess-board" id="chess-board" aria-label="Playable chess board">
+                    <div class="chess-board-loading">Loading chess board...</div>
+                </div>
+                <div class="chess-status-strip">
+                    <p id="chess-selection">Nothing selected.</p>
+                    <p id="chess-status">No check detection here. Just clean moves and birthday vibes.</p>
+                </div>
+            </div>
+        </section>
+
         <section class="letter-section reveal" id="birthday-letter">
             <div class="section-heading">
                 <p class="eyebrow">Birthday Card</p>
@@ -295,5 +317,6 @@
     </script>
     <script src="js/main.js"></script>
     <script src="js/game.js"></script>
+    <script src="js/chess.js"></script>
 </body>
 </html>

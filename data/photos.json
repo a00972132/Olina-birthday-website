@@ -1,0 +1,74 @@
+[
+    {
+        "src": "photos/IMG_5765.JPG",
+        "title": "Golden Memory",
+        "caption": "Warm and easy.",
+        "note": "",
+        "age": 1,
+        "location": "Olina's home"
+    },
+    {
+        "src": "photos/IMG_8404.JPG",
+        "title": "City Energy",
+        "caption": "Sharp and fun.",
+        "note": "",
+        "age": 2,
+        "location": "Rapid7"
+    },
+    {
+        "src": "photos/IMG_9497.JPG",
+        "title": "Adventure Mode",
+        "caption": "Big view, big mood.",
+        "note": "",
+        "age": 3,
+        "location": "Zion National Park"
+    },
+    {
+        "src": "photos/IMG_9540.JPG",
+        "title": "Postcard Frame",
+        "caption": "Looks unreal.",
+        "note": "",
+        "age": 4,
+        "location": "Zion National Park"
+    },
+    {
+        "src": "photos/IMG_9561.JPG",
+        "title": "Sunlit Scene",
+        "caption": "Bright favorite.",
+        "note": "",
+        "age": 5,
+        "location": "Zion National Park"
+    },
+    {
+        "src": "photos/IMG_4414.JPG",
+        "title": "Weekend Glow",
+        "caption": "Clean and happy.",
+        "note": "",
+        "age": 6,
+        "location": "Granite Links"
+    },
+    {
+        "src": "photos/IMG_9613.JPG",
+        "title": "Night Out",
+        "caption": "Late-night energy.",
+        "note": "",
+        "age": 7,
+        "location": "Vegas"
+    },
+    {
+        "src": "photos/IMG_9621.JPG",
+        "title": "Event Mode",
+        "caption": "Polished moment.",
+        "note": "",
+        "age": 8,
+        "location": "dbt event"
+    },
+    {
+        "src": "photos/IMG_9806.JPG",
+        "title": "Coastal Dream",
+        "caption": "Breezy and bright.",
+        "note": "",
+        "age": 9,
+        "location": "Catalina Island"
+    }
+]

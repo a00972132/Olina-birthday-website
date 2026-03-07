@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A playful birthday page celebrating Olina with memories, wishes, and a mini game.">
+    <title>Happy Birthday, Olina!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="page-orb orb-one" aria-hidden="true"></div>
+    <div class="page-orb orb-two" aria-hidden="true"></div>
+    <div class="page-orb orb-three" aria-hidden="true"></div>
+    <div class="dog-float dog-float-one" aria-hidden="true"><img src="photos/IMG_8703.jpg" alt=""></div>
+    <div class="dog-float dog-float-two" aria-hidden="true"><img src="photos/IMG_8704.jpg" alt=""></div>
+    <div class="dog-float dog-float-three" aria-hidden="true"><img src="photos/IMG_8705.jpg" alt=""></div>
+    <div class="confetti-layer" id="confetti-layer" aria-hidden="true"></div>
+
+    <header class="hero reveal">
+        <div class="hero-copy">
+            <p class="eyebrow">A tiny internet party for Olina</p>
+            <h1>Happy Birthday, <span>Olina</span></h1>
+            <p class="hero-text">
+                Built with sparkle, nostalgia, and the very serious opinion that your birthday deserves better
+                than a plain webpage.
+            </p>
+            <div class="hero-actions">
+                <a class="button button-primary" href="#memory-lane">Open Memory Lane</a>
+                <button class="button button-secondary" id="celebrate-button" data-confetti-trigger type="button">Launch Confetti</button>
+            </div>
+        </div>
+
+        <aside class="hero-card">
+            <p class="card-kicker">Birthday Forecast</p>
+            <ul class="forecast-list">
+                <li><span>Energy</span><strong>main character all day</strong></li>
+                <li><span>Playlist</span><strong>only certified bangers</strong></li>
+            </ul>
+
+            <div class="spotlight-box">
+                <p class="spotlight-label">Current compliment</p>
+                <p class="spotlight-text" id="spotlight-text">Loading birthday hype...</p>
+                <button class="mini-button" id="spotlight-button" type="button">Another one</button>
+            </div>
+        </aside>
+    </header>
+
+    <main class="page-shell">
+        <section class="wish-board reveal" id="wish-board">
+            <article class="wish-card accent-coral">
+                <p class="wish-tag">Wish No. 1</p>
+                <h2>More laughter than your camera roll can handle</h2>
+                <p>May this year be packed with chaotic fun, easy wins, and stories that get retold forever.</p>
+            </article>
+
+            <article class="wish-card accent-gold">
+                <p class="wish-tag">Wish No. 2</p>
+                <h2>The soft, lucky, glowing kind of happiness</h2>
+                <p>Not just big moments. Tiny ones too. Good coffee, perfect weather, random luck, and peaceful nights.</p>
+            </article>
+
+            <article class="wish-card accent-teal">
+                <p class="wish-tag">Wish No. 3</p>
+                <h2>Zero dull days</h2>
+                <p>You deserve a year that feels bright, bold, and very obviously designed in your favor.</p>
+            </article>
+        </section>
+
+        <section class="memory-lane reveal" id="memory-lane">
+            <div class="section-heading">
+                <p class="eyebrow">Memory Lane</p>
+                <h2>A gallery with birthday-polaroid energy</h2>
+            </div>
+
+            <p class="gallery-status" id="gallery-status">Loading memories...</p>
+            <div class="photo-grid" id="photo-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="game-section reveal" id="game-section">
+            <div class="section-heading">
+                <p class="eyebrow">Mini Game</p>
+                <h2>Guess the location in the memory</h2>
+                <p class="section-copy">A simple round-based game that actually works now and celebrates correct guesses properly.</p>
+            </div>
+
+            <div class="game-layout">
+                <div class="game-stage" id="game-stage" aria-live="polite"></div>
+
+                <div class="game-panel">
+                    <p class="game-round">Round <span id="round-number">1</span></p>
+                    <h3 class="game-title">Where was this photo taken?</h3>
+                    <p class="game-prompt" id="game-prompt">Loading the first memory...</p>
+
+                    <form class="game-form" id="game-form">
+                        <label class="sr-only" for="location-guess">Guess the location</label>
+                        <select id="location-guess" name="location-guess">
+                            <option value="">Choose a location</option>
+                        </select>
+                        <button class="button button-primary" type="submit">Check Guess</button>
+                    </form>
+
+                    <div class="game-actions">
+                        <button class="button button-secondary" id="next-round" type="button" disabled>Next Memory</button>
+                    </div>
+
+                    <p class="game-feedback" id="game-feedback" aria-live="polite"></p>
+
+                    <div class="scoreboard">
+                        <div class="score-card">
+                            <span>Score</span>
+                            <strong id="score-value">0</strong>
+                        </div>
+                        <div class="score-card">
+                            <span>Best streak</span>
+                            <strong id="streak-value">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="game-section reveal" id="shrutika-game-section">
+            <div class="section-heading">
+                <p class="eyebrow">Bonus Game</p>
+                <h2>Truth or Dare Roulette</h2>
+                <p class="section-copy">One spin. Two wheels. Maximum party damage.</p>
+            </div>
+
+            <div class="roulette-layout">
+                <div class="roulette-board">
+                    <div class="wheel-stack">
+                        <article class="wheel-card truth-wheel-card">
+                            <p class="wheel-title">Truth Wheel</p>
+                            <div class="wheel-shell">
+                                <span class="wheel-pointer"></span>
+                                <div class="wheel wheel-truth" id="truth-wheel">
+                                    <span class="wheel-center">Truth</span>
+                                </div>
+                            </div>
+                            <p class="wheel-tagline">Messy honesty encouraged.</p>
+                        </article>
+
+                        <article class="wheel-card dare-wheel-card">
+                            <p class="wheel-title">Dare Wheel</p>
+                            <div class="wheel-shell">
+                                <span class="wheel-pointer"></span>
+                                <div class="wheel wheel-dare" id="dare-wheel">
+                                    <span class="wheel-center">Dare</span>
+                                </div>
+                            </div>
+                            <p class="wheel-tagline">Bad ideas, premium delivery.</p>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="roulette-panel">
+                    <h3 class="game-title">Spin both wheels</h3>
+                    <p class="game-prompt">Take the truth, take the dare, or take the shot. No boring outcomes allowed.</p>
+
+                    <div class="game-actions">
+                        <button class="button button-primary" id="spin-roulette" type="button">Spin Once</button>
+                        <button class="button button-secondary" id="spin-again" type="button">Spin Again</button>
+                    </div>
+
+                    <div class="roulette-results">
+                        <article class="wheel-result truth-result">
+                            <span class="chaos-label">Truth Pull</span>
+                            <p id="truth-result">Tap spin to expose somebody.</p>
+                        </article>
+                        <article class="wheel-result dare-result">
+                            <span class="chaos-label">Dare Pull</span>
+                            <p id="dare-result">Tap spin to create immediate chaos.</p>
+                        </article>
+                    </div>
+                    <p class="game-feedback" id="roulette-feedback" aria-live="polite"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="letter-section reveal" id="birthday-letter">
+            <div class="section-heading">
+                <p class="eyebrow">Birthday Card</p>
+                <h2>Open the letter</h2>
+                <p class="section-copy">This envelope was not designed for subtle people.</p>
+            </div>
+
+            <div class="letter-stage" id="letter-stage">
+                <button class="envelope" id="open-letter" type="button" aria-expanded="false" aria-controls="letter-card">
+                    <span class="envelope-back"></span>
+                    <span class="envelope-flap"></span>
+                    <span class="envelope-seal">Open Me</span>
+                    <span class="envelope-letter-preview">
+                        A birthday note with a lot of love, a little chaos, and zero chill.
+                    </span>
+                </button>
+
+                <article class="letter-card" id="letter-card" aria-hidden="true">
+                    <p class="letter-kicker">From Will to Olina</p>
+                    <h3>Happy birthday!</h3>
+                    <div class="letter-body">
+                        <p>It hasn’t been the easiest year for you, but you pulled through with strength and grace. Congratulations on the move to Palo Alto and closing on your new home. That’s a huge milestone.</p>
+                        <p>You’ve been such a gentle and supportive friend through everything, and I’m really grateful for that. I always love spending time with you, and our snowboarding trips are some of my favorite memories. It’s always a blast and something I look forward to every year.</p>
+                        <p>I also love that you laugh at my silly jokes. You somehow make them funnier and always makes me laugh too.</p>
+                        <p>In the coming year, I hope you stay adventurous, curious, and carefree. You deserve a year full of great moments and new memories on coming your China trip.</p>
+                        <p>Happy birthday.</p>
+                        <p>Love, Will</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>Built for Olina with sugar, style, and suspiciously high confetti density.</p>
+    </footer>
+
+    <script id="photo-data" type="application/json">
+        [
+            {
+                "src": "photos/IMG_5765.JPG",
+                "title": "Golden Memory",
+                "caption": "Warm and easy.",
+                "note": "",
+                "age": 1,
+                "location": "Olina's home"
+            },
+            {
+                "src": "photos/IMG_8404.JPG",
+                "title": "City Energy",
+                "caption": "Sharp and fun.",
+                "note": "",
+                "age": 2,
+                "location": "Rapid7"
+            },
+            {
+                "src": "photos/IMG_9497.JPG",
+                "title": "Adventure Mode",
+                "caption": "Big view, big mood.",
+                "note": "",
+                "age": 3,
+                "location": "Zion National Park"
+            },
+            {
+                "src": "photos/IMG_9540.JPG",
+                "title": "Postcard Frame",
+                "caption": "Looks unreal.",
+                "note": "",
+                "age": 4,
+                "location": "Zion National Park"
+            },
+            {
+                "src": "photos/IMG_9561.JPG",
+                "title": "Sunlit Scene",
+                "caption": "Bright favorite.",
+                "note": "",
+                "age": 5,
+                "location": "Zion National Park"
+            },
+            {
+                "src": "photos/IMG_4414.JPG",
+                "title": "Weekend Glow",
+                "caption": "Clean and happy.",
+                "note": "",
+                "age": 6,
+                "location": "Granite Links"
+            },
+            {
+                "src": "photos/IMG_9613.JPG",
+                "title": "Night Out",
+                "caption": "Late-night energy.",
+                "note": "",
+                "age": 7,
+                "location": "Vegas"
+            },
+            {
+                "src": "photos/IMG_9621.JPG",
+                "title": "Event Mode",
+                "caption": "Polished moment.",
+                "note": "",
+                "age": 8,
+                "location": "dbt event"
+            },
+            {
+                "src": "photos/IMG_9806.JPG",
+                "title": "Coastal Dream",
+                "caption": "Breezy and bright.",
+                "note": "",
+                "age": 9,
+                "location": "Catalina Island"
+            }
+        ]
+    </script>
+    <script src="js/main.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

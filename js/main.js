@@ -9,7 +9,6 @@ window.BirthdaySite = BirthdaySite;
 document.addEventListener("DOMContentLoaded", () => {
     initComplimentSpotlight();
     initConfettiTriggers();
-    initLetterReveal();
     loadMemories();
 
     window.setTimeout(() => {
@@ -45,26 +44,6 @@ function initComplimentSpotlight() {
 function initConfettiTriggers() {
     document.querySelectorAll("[data-confetti-trigger]").forEach((button) => {
         button.addEventListener("click", () => launchConfetti(28));
-    });
-}
-
-function initLetterReveal() {
-    const trigger = document.getElementById("open-letter");
-    const stage = document.getElementById("letter-stage");
-    const card = document.getElementById("letter-card");
-
-    if (!trigger || !stage || !card) {
-        return;
-    }
-
-    trigger.addEventListener("click", () => {
-        const isOpen = stage.classList.toggle("is-open");
-        trigger.setAttribute("aria-expanded", String(isOpen));
-        card.setAttribute("aria-hidden", String(!isOpen));
-
-        if (isOpen) {
-            launchConfetti(26);
-        }
     });
 }
 

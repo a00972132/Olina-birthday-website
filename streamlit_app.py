@@ -16,6 +16,7 @@ def render_site() -> str:
     css = (ROOT / "css" / "styles.css").read_text(encoding="utf-8")
     main_js = (ROOT / "js" / "main.js").read_text(encoding="utf-8")
     game_js = (ROOT / "js" / "game.js").read_text(encoding="utf-8")
+    chess_js = (ROOT / "js" / "chess.js").read_text(encoding="utf-8")
     photo_data = json.loads((ROOT / "data" / "photos.json").read_text(encoding="utf-8"))
 
     inlined_photo_data = []
@@ -48,6 +49,7 @@ def render_site() -> str:
         f"<script>window.BirthdaySiteEmbeddedPhotos = {photo_json};</script><script>{main_js}</script>",
     )
     html = html.replace('<script src="js/game.js"></script>', f"<script>{game_js}</script>")
+    html = html.replace('<script src="js/chess.js"></script>', f"<script>{chess_js}</script>")
 
     for photo_path in (ROOT / "photos").glob("*"):
         if photo_path.is_file() and photo_path.name != "README.md":
@@ -89,4 +91,4 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-components.html(render_site(), height=5200, scrolling=True)
+components.html(render_site(), height=5600, scrolling=True)
